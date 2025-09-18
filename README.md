@@ -1,16 +1,27 @@
-## Hi there 👋
+# 👋 Hi there, I'm Anamika!
 
-<!--
-**anamika-sg52/anamika-sg52** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+Welcome to my GitHub profile!  
+I'm a passionate developer interested in Data Science, Fintech, and Artificial Intelligence. 🚀
 
-Here are some ideas to get you started:
+## 👩‍💻 About Me
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+- 💡 Enthusiastic about data, finance, and AI innovation
+- 🤖 Exploring: Machine Learning, Quantitative Finance, and Smart Algorithms
+- 🎯 Goals: Build impactful data-driven solutions in Fintech and AI
+- 💬 Ask me about Python, data analytics, or cool AI projects!
+
+## 🛠️ Tech Stack
+
+- Languages: **Python** | **SQL** | **JavaScript**
+- Data: **Pandas** | **NumPy** | **scikit-learn** | **TensorFlow**
+- Visualization: **Matplotlib** | **Seaborn** | **Power BI**
+- Tools: **Git** | **GitHub** | **Jupyter Notebook**
+
+## 📈 GitHub Stats
+
+![Anamika's GitHub stats](https://github-readme-stats.vercel.app/api?username=anamika-sg52&show_icons=true&theme=dracula)
+
+
+---
+
+✨ Thanks for visiting my profile! Have a great day! 😊
