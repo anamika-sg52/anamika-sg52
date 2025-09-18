@@ -1,16 +1,16 @@
 ## Hi there 👋
 
-<!--
-**anamika-sg52/anamika-sg52** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+### Welcome to my GitHub profile! 🌟
 
-Here are some ideas to get you started:
+I'm **Anamika** and I'm passionate about coding and technology! 🚀
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+- 🔭 I'm currently working on exciting software projects
+- 🌱 I'm currently learning new programming languages and frameworks  
+- 👯 I'm looking to collaborate on open source projects
+- 🤔 I'm looking for help with advanced algorithms and system design
+- 💬 Ask me about web development, programming, and tech trends
+- 📫 How to reach me: Feel free to connect with me here on GitHub!
+- 😄 Pronouns: She/Her
+- ⚡ Fun fact: I love solving coding challenges and building cool stuff! 💻
+
+### Let's connect and build something amazing together! 🤝✨
