@@ -15,7 +15,7 @@ I'm a passionate developer interested in Data Science, Fintech, and Artificial I
 - Languages: **Python** | **SQL** | **JavaScript**
 - Data: **Pandas** | **NumPy** | **scikit-learn** | **TensorFlow**
 - Visualization: **Matplotlib** | **Seaborn** | **Power BI**
-- Tools: **Git** | **GitHub** | **Jupyter Notebook**
+- Tools: **Git** | **GitHub** | **Jupyter Notebook** |**Excel**
 
 ## 📈 GitHub Stats
 
