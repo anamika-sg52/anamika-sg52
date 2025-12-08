@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Price Prediction</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .input-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        input, select {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .results {
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .prediction-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .prediction-card h2 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .prediction-card .price {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .prediction-card .change {
+            font-size: 1.5em;
+        }
+
+        .change.positive {
+            color: #4ade80;
+        }
+
+        .change.negative {
+            color: #f87171;
+        }
+
+        .chart-container {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 12px;
+        }
+
+        .chart {
+            width: 100%;
+            height: 300px;
+            position: relative;
+        }
+
+        .chart-line {
+            stroke: #667eea;
+            stroke-width: 3;
+            fill: none;
+        }
+
+        .prediction-line {
+            stroke: #f59e0b;
+            stroke-width: 3;
+            fill: none;
+            stroke-dasharray: 5, 5;
+        }
+
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .info-card {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .info-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            text-transform: uppercase;
+        }
+
+        .info-card .value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .popular-stocks {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .stock-chip {
+            background: #f3f4f6;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .stock-chip:hover {
+            background: #667eea;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .note {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 8px;
+        }
+
+        .note p {
+            color: #92400e;
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .prediction-card .price {
+                font-size: 2em;
+            }
+
+            .input-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📈 Stock Price Prediction</h1>
+            <p>Simple Moving Average Based Prediction System</p>
+        </header>
+
+        <div class="card">
+            <h2 style="margin-bottom: 20px; color: #333;">Enter Stock Details</h2>
+            
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="stockSymbol">Stock Symbol</label>
+                    <input type="text" id="stockSymbol" placeholder="e.g., AAPL, GOOGL, MSFT" value="AAPL">
+                </div>
+
+                <div class="form-group">
+                    <label for="currentPrice">Current Price ($)</label>
+                    <input type="number" id="currentPrice" placeholder="e.g., 150.00" step="0.01" value="175.50">
+                </div>
+
+                <div class="form-group">
+                    <label for="predictionDays">Prediction Period (days)</label>
+                    <select id="predictionDays">
+                        <option value="7">1 Week</option>
+                        <option value="14">2 Weeks</option>
+                        <option value="30" selected>1 Month</option>
+                        <option value="90">3 Months</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Historical Prices (comma separated, last 10 days)</label>
+                <input type="text" id="historicalPrices" placeholder="e.g., 170.50, 172.30, 171.80, 173.20, ..." value="170.50, 172.30, 171.80, 173.20, 174.10, 175.00, 174.50, 175.80, 176.20, 175.50">
+            </div>
+
+            <div class="popular-stocks">
+                <span style="font-weight: 600; margin-right: 10px;">Quick Select:</span>
+                <div class="stock-chip" onclick="setStock('AAPL', 175.50, '170.50, 172.30, 171.80, 173.20, 174.10, 175.00, 174.50, 175.80, 176.20, 175.50')">AAPL</div>
+                <div class="stock-chip" onclick="setStock('GOOGL', 140.20, '135.20, 136.50, 137.80, 138.20, 139.00, 139.50, 140.10, 140.50, 139.80, 140.20')">GOOGL</div>
+                <div class="stock-chip" onclick="setStock('MSFT', 378.90, '370.50, 372.20, 374.10, 375.80, 376.50, 377.20, 378.10, 378.50, 379.20, 378.90')">MSFT</div>
+                <div class="stock-chip" onclick="setStock('TSLA', 242.50, '235.10, 237.20, 238.50, 240.20, 241.30, 242.10, 243.50, 244.20, 243.10, 242.50')">TSLA</div>
+                <div class="stock-chip" onclick="setStock('AMZN', 152.30, '148.20, 149.50, 150.10, 150.80, 151.50, 151.90, 152.20, 152.80, 152.50, 152.30')">AMZN</div>
+            </div>
+
+            <button onclick="predictStock()">🔮 Predict Stock Price</button>
+
+            <div class="note">
+                <p><strong>Note:</strong> This is a simplified prediction model using moving averages. Real stock prediction requires complex machine learning models and should not be used for actual trading decisions.</p>
+            </div>
+        </div>
+
+        <div class="results" id="results">
+            <div class="prediction-card">
+                <h2 id="resultSymbol">AAPL</h2>
+                <div class="price" id="predictedPrice">$0.00</div>
+                <div class="change" id="priceChange">▲ $0.00 (0.00%)</div>
+            </div>
+
+            <div class="card">
+                <h2 style="margin-bottom: 20px; color: #333;">Price Trend Analysis</h2>
+                <div class="chart-container">
+                    <canvas id="chartCanvas" class="chart"></canvas>
+                </div>
+
+                <div class="info-cards">
+                    <div class="info-card">
+                        <h3>Current Price</h3>
+                        <div class="value" id="currentPriceDisplay">$0.00</div>
+                    </div>
+                    <div class="info-card">
+                        <h3>Predicted Price</h3>
+                        <div class="value" id="predictedPriceDisplay">$0.00</div>
+                    </div>
+                    <div class="info-card">
+                        <h3>Moving Average</h3>
+                        <div class="value" id="movingAverage">$0.00</div>
+                    </div>
+                    <div class="info-card">
+                        <h3>Prediction Period</h3>
+                        <div class="value" id="periodDisplay">0 days</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function setStock(symbol, currentPrice, historicalPrices) {
+            document.getElementById('stockSymbol').value = symbol;
+            document.getElementById('currentPrice').value = currentPrice;
+            document.getElementById('historicalPrices').value = historicalPrices;
+        }
+
+        function calculateMovingAverage(prices) {
+            const sum = prices.reduce((acc, price) => acc + price, 0);
+            return sum / prices.length;
+        }
+
+        function calculateTrend(prices) {
+            if (prices.length < 2) return 0;
+            const n = prices.length;
+            let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
+            
+            for (let i = 0; i < n; i++) {
+                sumX += i;
+                sumY += prices[i];
+                sumXY += i * prices[i];
+                sumX2 += i * i;
+            }
+            
+            const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+            return slope;
+        }
+
+        function predictStock() {
+            const symbol = document.getElementById('stockSymbol').value.toUpperCase();
+            const currentPrice = parseFloat(document.getElementById('currentPrice').value);
+            const predictionDays = parseInt(document.getElementById('predictionDays').value);
+            const historicalPricesStr = document.getElementById('historicalPrices').value;
+
+            if (!symbol || isNaN(currentPrice) || !historicalPricesStr) {
+                alert('Please fill in all fields!');
+                return;
+            }
+
+            const historicalPrices = historicalPricesStr.split(',').map(p => parseFloat(p.trim())).filter(p => !isNaN(p));
+
+            if (historicalPrices.length < 3) {
+                alert('Please provide at least 3 historical prices!');
+                return;
+            }
+
+            const movingAvg = calculateMovingAverage(historicalPrices);
+            const trend = calculateTrend(historicalPrices);
+            
+            const volatility = calculateVolatility(historicalPrices);
+            const trendStrength = trend * predictionDays;
+            const meanReversion = (movingAvg - currentPrice) * 0.3;
+            
+            const predictedPrice = currentPrice + trendStrength + meanReversion;
+            const priceChange = predictedPrice - currentPrice;
+            const percentChange = (priceChange / currentPrice) * 100;
+
+            document.getElementById('resultSymbol').textContent = symbol;
+            document.getElementById('predictedPrice').textContent = `$${predictedPrice.toFixed(2)}`;
+            
+            const changeElement = document.getElementById('priceChange');
+            const changeSymbol = priceChange >= 0 ? '▲' : '▼';
+            changeElement.textContent = `${changeSymbol} $${Math.abs(priceChange).toFixed(2)} (${percentChange.toFixed(2)}%)`;
+            changeElement.className = priceChange >= 0 ? 'change positive' : 'change negative';
+
+            document.getElementById('currentPriceDisplay').textContent = `$${currentPrice.toFixed(2)}`;
+            document.getElementById('predictedPriceDisplay').textContent = `$${predictedPrice.toFixed(2)}`;
+            document.getElementById('movingAverage').textContent = `$${movingAvg.toFixed(2)}`;
+            document.getElementById('periodDisplay').textContent = `${predictionDays} days`;
+
+            drawChart(historicalPrices, currentPrice, predictedPrice, predictionDays);
+
+            document.getElementById('results').classList.add('show');
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function calculateVolatility(prices) {
+            const avg = calculateMovingAverage(prices);
+            const squaredDiffs = prices.map(price => Math.pow(price - avg, 2));
+            const variance = calculateMovingAverage(squaredDiffs);
+            return Math.sqrt(variance);
+        }
+
+        function drawChart(historicalPrices, currentPrice, predictedPrice, predictionDays) {
+            const canvas = document.getElementById('chartCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = canvas.offsetWidth;
+            canvas.height = 300;
+
+            const width = canvas.width;
+            const height = canvas.height;
+            const padding = 40;
+
+            ctx.clearRect(0, 0, width, height);
+
+            const allPrices = [...historicalPrices, currentPrice, predictedPrice];
+            const minPrice = Math.min(...allPrices) * 0.98;
+            const maxPrice = Math.max(...allPrices) * 1.02;
+            const priceRange = maxPrice - minPrice;
+
+            const historicalPoints = historicalPrices.length;
+            const totalPoints = historicalPoints + 2;
+            const xStep = (width - 2 * padding) / (totalPoints - 1);
+
+            function getY(price) {
+                return height - padding - ((price - minPrice) / priceRange) * (height - 2 * padding);
+            }
+
+            ctx.strokeStyle = '#e5e7eb';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 5; i++) {
+                const y = padding + (i * (height - 2 * padding) / 5);
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(width - padding, y);
+                ctx.stroke();
+
+                const price = maxPrice - (i * priceRange / 5);
+                ctx.fillStyle = '#6b7280';
+                ctx.font = '12px sans-serif';
+                ctx.textAlign = 'right';
+                ctx.fillText(`$${price.toFixed(2)}`, padding - 5, y + 4);
+            }
+
+            ctx.strokeStyle = '#667eea';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            historicalPrices.forEach((price, index) => {
+                const x = padding + index * xStep;
+                const y = getY(price);
+                if (index === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+            ctx.stroke();
+
+            ctx.strokeStyle = '#f59e0b';
+            ctx.lineWidth = 3;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            const currentX = padding + historicalPoints * xStep;
+            const currentY = getY(currentPrice);
+            const predictedX = padding + (totalPoints - 1) * xStep;
+            const predictedY = getY(predictedPrice);
+            ctx.moveTo(currentX, currentY);
+            ctx.lineTo(predictedX, predictedY);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            [...historicalPrices, currentPrice, predictedPrice].forEach((price, index) => {
+                const x = padding + index * xStep;
+                const y = getY(price);
+                ctx.fillStyle = index < historicalPoints ? '#667eea' : '#f59e0b';
+                ctx.beginPath();
+                ctx.arc(x, y, 4, 0, 2 * Math.PI);
+                ctx.fill();
+            });
+
+            ctx.fillStyle = '#667eea';
+            ctx.fillRect(width - 200, 20, 15, 15);
+            ctx.fillStyle = '#000';
+            ctx.font = '14px sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText('Historical Prices', width - 180, 32);
+
+            ctx.fillStyle = '#f59e0b';
+            ctx.fillRect(width - 200, 45, 15, 15);
+            ctx.fillStyle = '#000';
+            ctx.fillText('Predicted Price', width - 180, 57);
+        }
+
+        window.addEventListener('resize', function() {
+            if (document.getElementById('results').classList.contains('show')) {
+                const symbol = document.getElementById('stockSymbol').value;
+                const currentPrice = parseFloat(document.getElementById('currentPriceDisplay').textContent.replace('$', ''));
+                const predictedPrice = parseFloat(document.getElementById('predictedPriceDisplay').textContent.replace('$', ''));
+                const historicalPricesStr = document.getElementById('historicalPrices').value;
+                const historicalPrices = historicalPricesStr.split(',').map(p => parseFloat(p.trim())).filter(p => !isNaN(p));
+                const predictionDays = parseInt(document.getElementById('predictionDays').value);
+                
+                drawChart(historicalPrices, currentPrice, predictedPrice, predictionDays);
+            }
+        });
+    </script>
+</body>
+</html>
