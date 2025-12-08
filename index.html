@@ -334,9 +334,11 @@
 
     <script>
         function setStock(symbol, currentPrice, historicalPrices) {
-            document.getElementById('stockSymbol').value = symbol;
-            document.getElementById('currentPrice').value = currentPrice;
-            document.getElementById('historicalPrices').value = historicalPrices;
+            if (typeof symbol === 'string' && !isNaN(currentPrice) && typeof historicalPrices === 'string') {
+                document.getElementById('stockSymbol').value = symbol;
+                document.getElementById('currentPrice').value = currentPrice;
+                document.getElementById('historicalPrices').value = historicalPrices;
+            }
         }
 
         function calculateMovingAverage(prices) {
@@ -506,17 +508,21 @@
             ctx.fillText('Predicted Price', width - 180, 57);
         }
 
+        let resizeTimeout;
         window.addEventListener('resize', function() {
-            if (document.getElementById('results').classList.contains('show')) {
-                const symbol = document.getElementById('stockSymbol').value;
-                const currentPrice = parseFloat(document.getElementById('currentPriceDisplay').textContent.replace('$', ''));
-                const predictedPrice = parseFloat(document.getElementById('predictedPriceDisplay').textContent.replace('$', ''));
-                const historicalPricesStr = document.getElementById('historicalPrices').value;
-                const historicalPrices = historicalPricesStr.split(',').map(p => parseFloat(p.trim())).filter(p => !isNaN(p));
-                const predictionDays = parseInt(document.getElementById('predictionDays').value);
-                
-                drawChart(historicalPrices, currentPrice, predictedPrice, predictionDays);
-            }
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(function() {
+                if (document.getElementById('results').classList.contains('show')) {
+                    const symbol = document.getElementById('stockSymbol').value;
+                    const currentPrice = parseFloat(document.getElementById('currentPriceDisplay').textContent.replace('$', ''));
+                    const predictedPrice = parseFloat(document.getElementById('predictedPriceDisplay').textContent.replace('$', ''));
+                    const historicalPricesStr = document.getElementById('historicalPrices').value;
+                    const historicalPrices = historicalPricesStr.split(',').map(p => parseFloat(p.trim())).filter(p => !isNaN(p));
+                    const predictionDays = parseInt(document.getElementById('predictionDays').value);
+                    
+                    drawChart(historicalPrices, currentPrice, predictedPrice, predictionDays);
+                }
+            }, 250);
         });
     </script>
 </body>
